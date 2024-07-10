@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  email: MyString
+  location: MyString
+  handicap: 1
+  gir: 1
+  fairways_hit: 1
+  putts_per_round: 1
+  password_digest: MyString
+  image_url: MyString
+
+two:
+  name: MyString
+  email: MyString
+  location: MyString
+  handicap: 1
+  gir: 1
+  fairways_hit: 1
+  putts_per_round: 1
+  password_digest: MyString
+  image_url: MyString
