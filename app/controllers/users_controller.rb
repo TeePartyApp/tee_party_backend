@@ -22,7 +22,7 @@ class UsersController < ApplicationController
       password_confirmation: params[:password_confirmation],
       image_url: params[:image_url]
     )
-    if @user.save
+    if user.save
       render json: { message: "User successfully created!" }, status: :created
     else
       render json: { message: user.errors.full_messages }, status: :bad_request
@@ -39,7 +39,8 @@ class UsersController < ApplicationController
       gir: params[:gir] || @user.gir,
       fairways_hit: params[:fairways_hit] || @user.fairways_hit,
       putts_per_round: params[:putts_per_round] || @user.putts_per_round,
-      password_digest: params[:password_digest] || @user.password_digest,
+      password: params[:password] || @user.password,
+      password_confirmation: params[:password_confirmation] || @user.password_confirmation,
       image_url: params[:image_url] || @user.image_url
     )
     render :show
