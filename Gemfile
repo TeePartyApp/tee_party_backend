@@ -67,3 +67,6 @@ group :test do
 end
 
 gem 'faker'
+gem 'rest-client'
+gem 'http'
+gem 'uri'
