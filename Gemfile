@@ -67,6 +67,4 @@ group :test do
 end
 
 gem 'faker'
-gem 'rest-client'
-gem 'http'
-gem 'uri'
+gem 'bcrypt', '~> 3.1.7'

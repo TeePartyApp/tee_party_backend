@@ -18,7 +18,8 @@ class UsersController < ApplicationController
       gir: params[:gir],
       fairways_hit: params[:fairways_hit],
       putts_per_round: params[:putts_per_round],
-      password_digest: params[:password_digest],
+      password: params[:password],
+      password_confirmation: params[:password_confirmation],
       image_url: params[:image_url]
     )
     if @user.save
