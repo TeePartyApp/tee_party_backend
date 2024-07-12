@@ -17,4 +17,16 @@ Rails.application.routes.draw do
 
   # Sessions routes
   post "/sessions" => "sessions#create"
+
+  # Match Routes
+  get "/matches" => "matches#index"
+  get "/matches/:id" => "matches#show"
+  post "/matches" => "matches#create"
+  patch "/matches/:id" => "matches#update"
+  delete "/matches/:id" => "matches#destroy"
+  resources :matches do
+    member do
+      patch :reject
+    end
+  end
 end

@@ -1,11 +1,13 @@
 class CreateMatches < ActiveRecord::Migration[7.1]
   def change
     create_table :matches do |t|
-      t.integer :user_id
-      t.integer :matched_user_id
-      t.string :status
+      t.references :user, null: false, foreign_key: { to_table: :users }
+      t.references :matched_user, null: false, foreign_key: { to_table: :users }
+      t.string :status, default: 'pending'
 
       t.timestamps
     end
+
+    add_index :matches, [:user_id, :matched_user_id], unique: true
   end
 end
