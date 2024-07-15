@@ -2,13 +2,13 @@ class MatchesController < ApplicationController
   before_action :set_match, only: [:show, :update, :destroy, :reject]
 
   def index
-    @matches = Match.where(user_id: current_user.id).or(Match.where(matched_user_id: current_user.id))
-    render json: @matches
+    @matches = Match.where(user_id: current_user.id, status: 'accepted')
+    render :index
   end
 
   def show
     @match = Match.find_by(id: params[:id])
-    render json: @match
+    render :show
   end
 
   def create
@@ -59,11 +59,9 @@ class MatchesController < ApplicationController
     end
       
     def check_mutual_match(match)
-      # Find the reverse match
       reverse_match = Match.find_by(user_id: match.matched_user_id, matched_user_id: match.user_id)
 
       if reverse_match.present? && match.status == 'pending' && reverse_match.status == 'pending'
-        # Update both matches to 'accepted'
         match.update(status: 'accepted')
         reverse_match.update(status: 'accepted')
       end
