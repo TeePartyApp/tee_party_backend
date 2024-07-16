@@ -2,6 +2,7 @@ class MatchesController < ApplicationController
   before_action :set_match, only: [:show, :update, :destroy, :reject]
 
   def index
+    #Base query
     @matches = Match.where(user_id: current_user.id, status: 'accepted')
     render :index
   end
@@ -15,7 +16,7 @@ class MatchesController < ApplicationController
     @match = Match.new(
       user_id: current_user.id,
       matched_user_id: params[:matched_user_id],
-      status: 'pending'
+      status: params[:status] || 'pending'
     )
 
     if @match.save
@@ -51,7 +52,7 @@ class MatchesController < ApplicationController
       render json: @match.errors, status: :unprocessable_entity
     end
   end
-  
+
   private
   
     def set_match

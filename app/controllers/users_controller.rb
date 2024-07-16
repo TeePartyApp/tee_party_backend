@@ -49,4 +49,28 @@ class UsersController < ApplicationController
     @user.destroy
     render json: { message: "User has been deleted." }
   end
+
+
+  def random_users
+    if current_user.nil?
+      render json: { error: "User not logged in" }, status: :unauthorized and return
+    end
+
+    
+    #Permit filter parameters
+    filters = params.permit(:location, :handicap, :gir, :fairways_hit, :putts_per_round)
+
+    @user = User.where.not(id: current_user.id)
+    
+    #Apply filters if present
+    @user = User.where(location: filters[:location]) if filters[:location].present?
+    @user = User.where(handicap: filters[:handicap]) if filters[:handicap].present?
+    @user = User.where(gir: filters[:gir]) if filters[:gir].present?
+    @user = User.where(fairways_hit: filters[:fairways_hit]) if filters[:fairways_hit].present?
+    @user = User.where(putts_per_round: filters[:putts_per_round]) if filters[:putts_per_round].present?
+    
+    @user = User.order("RANDOM()").first
+    render json: @user
+  end
+  
 end
