@@ -15,8 +15,9 @@ Rails.application.routes.draw do
   patch "/users/:id" => "users#update"
   delete "users/:id" => "users#destroy"
 
-  #get random user route
+  #search users route
   get "/random_users" => "users#random_users"
+  get "/filter_users" => "users#filter_users"
 
   # Sessions routes
   post "/sessions" => "sessions#create"
