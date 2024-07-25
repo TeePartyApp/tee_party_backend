@@ -33,4 +33,9 @@ Rails.application.routes.draw do
       patch :reject
     end
   end
+
+  # Messages routes
+  resources :conversations do
+    resources :messages, only: [:index, :create]
+  end
 end
