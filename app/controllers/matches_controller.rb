@@ -2,7 +2,6 @@ class MatchesController < ApplicationController
   before_action :set_match, only: [:show, :update, :destroy, :reject]
 
   def index
-    #Base query
     @matches = Match.where(user_id: current_user.id, status: 'accepted')
     render :index
   end

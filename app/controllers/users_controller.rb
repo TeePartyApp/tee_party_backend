@@ -56,8 +56,15 @@ class UsersController < ApplicationController
       render json: { error: "User not logged in" }, status: :unauthorized and return
     end
 
-    @user = User.where.not(id: current_user.id).order("RANDOM()").first
-    render json: @user
+    matched_user_ids = Match.where(user_id: current_user.id).pluck(:matched_user_id)
+
+    @user = User.where.not(id: matched_user_ids + [current_user.id]).order("RANDOM()").first
+    
+    if @user
+      render json: @user
+    else 
+      render json: { error: "No users found" }, status: :not_found
+    end
   end
 
   def filter_users
@@ -65,7 +72,6 @@ class UsersController < ApplicationController
       render json: { error: "User not logged in" }, status: :unauthorized and return
     end
   
-    # Permit filter parameters
     filters = params.permit(
       :location, 
       :handicap_min, :handicap_max,
@@ -73,11 +79,11 @@ class UsersController < ApplicationController
       :fairways_hit_min, :fairways_hit_max,
       :putts_per_round_min, :putts_per_round_max
       )
-  
-    # Start with all users except the current user
-    users = User.where.not(id: current_user.id)
-  
-    # Apply filters if present
+
+    matched_user_ids = Match.where(user_id: current_user.id).pluck(:matched_user_id)
+    
+    users = User.where.not(id: matched_user_ids + [current_user.id])
+
     users = users.where(location: filters[:location]) if filters[:location].present?
     users = users.where(handicap: filters[:handicap_min]..filters[:handicap_max]) if filters[:handicap_min].present? && filters[:handicap_max].present?
     users = users.where(gir: filters[:gir_min]..filters[:gir_max]) if filters[:gir_min].present? && filters[:gir_max].present?
@@ -88,7 +94,7 @@ class UsersController < ApplicationController
       render json: { message: "No users found based on the provided filters" }, status: :not_found and return
     end
     
-    # Select a random user from the filtered list
+
     user = users.order("RANDOM()").first
   
     render json: user
