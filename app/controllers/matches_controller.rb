@@ -12,18 +12,21 @@ class MatchesController < ApplicationController
   end
 
   def create
-    @match = Match.new(
+    @match = Match.find_or_initialize_by(
       user_id: current_user.id,
-      matched_user_id: params[:matched_user_id],
-      status: params[:status] || 'pending'
+      matched_user_id: params[:matched_user_id]
     )
+    @match.status = params[:status] || 'pending'
 
     if @match.save
       check_mutual_match(@match)
-      render json: @match, status: :created
     else
+      Rails.logger.error("Match save failed: #{@match.errors.full_messages}")
       render json: @match.errors, status: :unprocessable_entity
     end
+  rescue => e
+    Rails.logger.error("Exception in create action: #{e.message}")
+    render json: { error: "Internal server error" }, status: :internal_server_error
   end
 
   def update
@@ -66,6 +69,7 @@ class MatchesController < ApplicationController
         reverse_match.update(status: 'accepted')
         render json: { match: match, message: "It's a match!" }, status: :created and return
       end
+
       render json: match, status: :created
     end
 end

@@ -55,17 +55,25 @@ class UsersController < ApplicationController
     if current_user.nil?
       render json: { error: "User not logged in" }, status: :unauthorized and return
     end
-
+  
     matched_user_ids = Match.where(user_id: current_user.id).pluck(:matched_user_id)
-
-    @user = User.where.not(id: matched_user_ids + [current_user.id]).order("RANDOM()").first
-    
-    if @user
-      render json: @user
-    else 
+  
+    liked_user_ids = Match.where(matched_user_id: current_user.id, status: 'pending').pluck(:user_id)
+  
+    prioritized_users = User.where(id: liked_user_ids).where.not(id: matched_user_ids + [current_user.id])
+    random_user = prioritized_users.order("RANDOM()").first
+  
+    if random_user.nil?
+      random_user = User.where.not(id: matched_user_ids + [current_user.id]).order("RANDOM()").first
+    end
+  
+    if random_user
+      render json: random_user
+    else
       render json: { error: "No users found" }, status: :not_found
     end
   end
+  
 
   def filter_users
     if current_user.nil?
