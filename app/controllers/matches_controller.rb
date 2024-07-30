@@ -64,6 +64,8 @@ class MatchesController < ApplicationController
       if reverse_match.present? && match.status == 'pending' && reverse_match.status == 'pending'
         match.update(status: 'accepted')
         reverse_match.update(status: 'accepted')
+        render json: { match: match, message: "It's a match!" }, status: :created and return
       end
+      render json: match, status: :created
     end
 end
